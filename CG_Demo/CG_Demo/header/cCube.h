@@ -17,8 +17,8 @@ public:
 	Cube(float _x, float _y, float _z, float _r, float _g, float _b);
 	~Cube();
 
-	void draw();
-	void drawRectangle();
+	void draw(float _x);
+	void drawRectangle(float _x);
 
 	float x;
 	float y;
