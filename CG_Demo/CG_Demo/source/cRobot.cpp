@@ -1,3 +1,11 @@
+//
+//  Robot.cpp
+//  CG_Robot
+//
+//  Created by César Alejandro Córdova Blanco on 9/8/18.
+//  Copyright © 2018 Yoali Sotomayor. All rights reserved.
+//
+
 #include "cCube.h"
 #include "cRobot.h"
 #include <stdio.h>
@@ -27,25 +35,34 @@ Robot::~Robot()
 }
 
 void Robot::arm(float _x){
-    shoulder = new Cube(_x, y + 2.2f, z, 1.0f, 0, 0);
-    biceps = new Cube(_x, y + 1.5f, z, 1.0f, 1.0f, 1.0f);
-    forearm = new Cube(_x, y + 0.6f, z, 1.0f, 0, 0);
-    hand = new Cube(_x, y - 0.2f, z, 0, 0, 1.0f);
-    
-    shoulder->draw(0.7f);
-    biceps->draw(0.7f);
-    forearm->drawPrism2f(1.0f, 1.3f);
-    hand->draw(0.7f);
+    glPushMatrix();
+    {
+        hand = new Cube(_x, y - 0.2f, z, 0, 0, 1.0f);
+        forearm = new Cube(_x, y + 0.6f, z, 1.0f, 0, 0);
+        biceps = new Cube(_x, y + 1.5f, z, 1.0f, 1.0f, 1.0f);
+        shoulder = new Cube(_x, y + 2.2f, z, 1.0f, 0, 0);
+        
+        hand->draw(0.7f);
+        forearm->drawPrism2f(1.0f, 1.3f);
+        biceps->draw(0.7f);
+        shoulder->draw(0.7f);
+    }
+    glPopMatrix();
     
 }
 void Robot::leg(float _x){
     thigh = new Cube(_x, y - 1.0f, z, 1.0f, 1.0f, 1.0f);
-    shin = new Cube(_x, y - 2.2f, z, 0, 0, 1.0f);
-    foot = new Cube(_x, y - 2.8f, z + 0.3f, 0, 0, 1.0f);
-    
     thigh->drawPrism3f(0.7f, 1.3f, 0.7f);
-    shin->drawPrism3f(0.85f, 1.5f, 0.85f);
-    foot->drawPrism3f(1.0f, 0.3f, 1.1f);
+    
+    glPushMatrix();
+    {
+        shin = new Cube(_x, y - 2.2f, z, 0, 0, 1.0f);
+        foot = new Cube(_x, y - 2.8f, z + 0.3f, 0, 0, 1.0f);
+        
+        shin->drawPrism3f(0.85f, 1.5f, 0.85f);
+        foot->drawPrism3f(1.0f, 0.3f, 1.1f);
+    }
+    glPopMatrix();
 }
 void Robot::torso(){
     glPushMatrix();
@@ -64,16 +81,35 @@ void Robot::torso(){
     }
     glPopMatrix();
 }
-void Robot::draw(){
+void Robot::draw(float armRotation){
     glPushMatrix();
     {
         torso();
-        arm(1.35f);
-        arm(-1.35f);
-        leg(0.5f);
-        leg(-0.5f);
+        glPushMatrix();
+        {
+            glTranslatef(0, 2.35f, 0);
+            glRotatef(armRotation, 1, 0, 0);
+            glTranslatef(0, -2.25f, 0);
+            arm(1.35f);
+        } glPopMatrix();
+        glPushMatrix();
+        {
+            glTranslatef(0, 2.35f, 0);
+            glRotatef(-armRotation, 1, 0, 0);
+            glTranslatef(0, -2.25f, 0);
+            arm(-1.35f);
+        } glPopMatrix();
+        glPushMatrix();
+        {
+            glRotatef(armRotation, 1, 0, 0);
+            leg(0.5f);
+        } glPopMatrix();
+        glPushMatrix();
+        {
+            glRotatef(armRotation, 1, 0, 0);
+            leg(-0.5f);
+        } glPopMatrix();
     }
     glPopMatrix();
 }
-
 

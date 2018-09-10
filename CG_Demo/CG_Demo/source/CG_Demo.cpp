@@ -29,12 +29,16 @@ int direction;
 float movement;
 float speed;
 float acceleration;
+float armRotation;
+float armRotationDirection;
 void init() // FOR GLUT LOOP
 {
     direction = 1;
     movement = 0.0f;
     speed=.003f;
     acceleration=.002f;
+    armRotation = 0;
+    armRotationDirection = 1;
     glEnable(GL_DEPTH_TEST);            // Enable check for close and far objects.
     glClearColor(0.0, 0.0, 0.0, 0.0);    // Clear the color state.
     glMatrixMode(GL_MODELVIEW);            // Go to 3D mode.
@@ -49,7 +53,7 @@ void display()                            // Called for each frame (about 60 tim
               0.0, 0.0, 0.0,                                        // To where the camera points at.
               0.0, 1.0, 0.0);                                        // "UP" vector.
     rob = new Robot(0, movement, 0);
-    rob->draw();
+    rob->draw(armRotation);
     
     glutSwapBuffers();                                                // Swap the hidden and visible buffers.
 }
@@ -73,6 +77,16 @@ void idle()                                                            // Called
     if (speed <=.001f)
         speed=.001f;
     movement += (speed * direction);
+    
+    if(armRotation > 15) {
+        printf("holi 3");
+        armRotationDirection = -1;
+    }
+    if(armRotation < -15) {
+        armRotationDirection = 1;
+    }
+    armRotation += (1 * armRotationDirection);
+    
 }
 
 void reshape(int h, int v)                                            // Called when the window geometry changes.
@@ -102,5 +116,4 @@ int main(int argc, char* argv[])
     glutMainLoop();                                                    // Begin graphics program.
     return 0;                                                        // ANSI C requires a return value.
 }
-
 
