@@ -18,11 +18,13 @@ public:
     ~Robot();
     
     void arm(float _x);
-    void leg(float _x);
+    void leg(float _x, float kneeRotation);
     void torso();
-    void draw(float armRotation);
+    void draw(float armRotation, float leftKneeRotation, float rightKneeRotation);
     
     float x;
     float y;
     float z;
 };
+
+

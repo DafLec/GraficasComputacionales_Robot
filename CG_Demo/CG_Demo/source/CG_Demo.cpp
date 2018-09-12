@@ -31,6 +31,12 @@ float speed;
 float acceleration;
 float armRotation;
 float armRotationDirection;
+float leftKneeRotation;
+float leftKneeRotationDirection;
+float leftKneeAcceleration;
+float rightKneeRotation;
+float rightKneeRotationDirection;
+float rightKneeAcceleration;
 void init() // FOR GLUT LOOP
 {
     direction = 1;
@@ -39,6 +45,12 @@ void init() // FOR GLUT LOOP
     acceleration=.002f;
     armRotation = 0;
     armRotationDirection = 1;
+    leftKneeRotation = 15;
+    leftKneeRotationDirection = 1;
+    leftKneeAcceleration = 1.0f;
+    rightKneeRotation = 0;
+    rightKneeRotationDirection = 1;
+    rightKneeAcceleration = 1.0f;
     glEnable(GL_DEPTH_TEST);            // Enable check for close and far objects.
     glClearColor(0.0, 0.0, 0.0, 0.0);    // Clear the color state.
     glMatrixMode(GL_MODELVIEW);            // Go to 3D mode.
@@ -53,7 +65,7 @@ void display()                            // Called for each frame (about 60 tim
               0.0, 0.0, 0.0,                                        // To where the camera points at.
               0.0, 1.0, 0.0);                                        // "UP" vector.
     rob = new Robot(0, movement, 0);
-    rob->draw(armRotation);
+    rob->draw(armRotation, leftKneeRotation, rightKneeRotation);
     
     glutSwapBuffers();                                                // Swap the hidden and visible buffers.
 }
@@ -79,13 +91,40 @@ void idle()                                                            // Called
     movement += (speed * direction);
     
     if(armRotation > 15) {
-        printf("holi 3");
         armRotationDirection = -1;
+        leftKneeRotation = -1;
+        leftKneeRotationDirection = 0;
+        leftKneeAcceleration = 1;
+        rightKneeRotationDirection = -1;
+        rightKneeAcceleration = 3;
     }
-    if(armRotation < -15) {
+    
+    if(armRotation < -10) {
         armRotationDirection = 1;
+        leftKneeRotationDirection = 1;
+        leftKneeAcceleration = 3;
+        leftKneeRotation = -1;
+        rightKneeRotation = 0;
+        rightKneeRotationDirection = 1;
+        rightKneeAcceleration = 1;
     }
     armRotation += (1 * armRotationDirection);
+    
+    if(leftKneeRotation > 3) {
+        leftKneeRotationDirection = -1;
+    }
+    if(armRotation < 0) {
+        leftKneeRotationDirection = 1;
+        rightKneeRotationDirection = 1;
+    }
+    leftKneeRotation += (1.5 * leftKneeRotationDirection * leftKneeAcceleration);
+    
+    if(rightKneeRotation < -3) {
+        rightKneeRotationDirection = 1;
+    }
+    
+    rightKneeRotation -= (1.5 * rightKneeRotationDirection * rightKneeAcceleration);
+    
     
 }
 
@@ -116,4 +155,3 @@ int main(int argc, char* argv[])
     glutMainLoop();                                                    // Begin graphics program.
     return 0;                                                        // ANSI C requires a return value.
 }
-

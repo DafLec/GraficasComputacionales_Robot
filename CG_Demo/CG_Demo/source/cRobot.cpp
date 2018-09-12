@@ -1,11 +1,3 @@
-//
-//  Robot.cpp
-//  CG_Robot
-//
-//  Created by César Alejandro Córdova Blanco on 9/8/18.
-//  Copyright © 2018 Yoali Sotomayor. All rights reserved.
-//
-
 #include "cCube.h"
 #include "cRobot.h"
 #include <stdio.h>
@@ -50,20 +42,22 @@ void Robot::arm(float _x){
     glPopMatrix();
     
 }
-void Robot::leg(float _x){
+void Robot::leg(float _x, float kneeRotation){
     thigh = new Cube(_x, y - 1.0f, z, 1.0f, 1.0f, 1.0f);
     thigh->drawPrism3f(0.7f, 1.3f, 0.7f);
-    
     glPushMatrix();
     {
         shin = new Cube(_x, y - 2.2f, z, 0, 0, 1.0f);
         foot = new Cube(_x, y - 2.8f, z + 0.3f, 0, 0, 1.0f);
-        
+        glTranslatef(0, -1.4, 0);
+        glRotatef(kneeRotation, 1, 0, 0);
+        glTranslatef(0, 1.4, 0);
         shin->drawPrism3f(0.85f, 1.5f, 0.85f);
         foot->drawPrism3f(1.0f, 0.3f, 1.1f);
     }
     glPopMatrix();
 }
+
 void Robot::torso(){
     glPushMatrix();
     {
@@ -81,7 +75,7 @@ void Robot::torso(){
     }
     glPopMatrix();
 }
-void Robot::draw(float armRotation){
+void Robot::draw(float armRotation, float leftKneeRotation, float rightKneeRotation){
     glPushMatrix();
     {
         torso();
@@ -99,15 +93,17 @@ void Robot::draw(float armRotation){
             glTranslatef(0, -2.25f, 0);
             arm(-1.35f);
         } glPopMatrix();
+        
         glPushMatrix();
         {
-            glRotatef(armRotation, 1, 0, 0);
-            leg(0.5f);
+            glRotatef(-armRotation, 1, 0, 0);
+            leg(0.5f, leftKneeRotation);
         } glPopMatrix();
+        
         glPushMatrix();
         {
             glRotatef(armRotation, 1, 0, 0);
-            leg(-0.5f);
+            leg(-0.5f, rightKneeRotation);
         } glPopMatrix();
     }
     glPopMatrix();
